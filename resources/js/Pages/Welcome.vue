@@ -47,9 +47,9 @@ defineProps({
             </div>
 
             <div class="mt-16">
-                <h1 class="font-semibold text-gray-600 dark:text-gray-400 text-4xl text-center leading-normal">Добро пожаловать в проект техническая поддержка пользователей</h1>
+                <h1 class="font-semibold text-gray-600 dark:text-gray-400 text-4xl text-center leading-normal">Добро пожаловать в проект многоуровневая поддержка пользователей</h1>
 
-                <h2 class="mt-10 text-center font-semibold text-gray-600 dark:text-gray-400 text-2xl leading-normal">Преимущества</h2>
+                <h2 class="mt-10 text-center font-semibold text-gray-600 dark:text-gray-400 text-2xl leading-normal"></h2>
                 <div class="mt-5">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                         <div class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
@@ -79,7 +79,7 @@ defineProps({
                     </div>
                 </div>
             </div>
-            <div v-if="$page.props.auth.user" class="flex justify-center align-items-center mt-16 px-6">
+            <div v-if="!$page.props.auth.user" class="flex justify-center align-items-center mt-16 px-6">
                 <Link class="rounded border border-2 p-3 border-red-500 hover:border-red-300 text-center text-3xl font-semibold text-red-400 hover:text-red-600 transition duration-200 ease-in" :href="route('register')">Зарегистрироваться</Link>
             </div>
         </div>
