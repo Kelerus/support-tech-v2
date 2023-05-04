@@ -30,7 +30,7 @@ console.log(props.tickets);
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-4">
                     <h2 v-if="!tickets.length" class="text-xl text-center">Заявки отсутвуют</h2>
                     <ul class="flex flex-col gap-4">
-                        <li v-for="ticket in tickets" :key="ticket.id" class="bg-red-500 rounded-md flex items-center justify-between p-2">
+                        <li v-for="ticket in tickets" :key="ticket.id" class="bg-red-600/70 rounded-md flex items-center justify-between p-2">
                             <div class="flex flex-col gap-0.5">
                                 <h3 class="text-white text-lg">Название: {{ ticket.name }}</h3>
                                 <div class="text-white text-sm max-w-3xl truncate">Описание: {{ ticket.description }}</div>

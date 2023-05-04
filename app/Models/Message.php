@@ -10,6 +10,6 @@ class Message extends Model
     use HasFactory;
 
     public function user() {
-        return $this->hasOne(User::class,'id');
+        return $this->belongsTo(User::class,'created_by');
     }
 }

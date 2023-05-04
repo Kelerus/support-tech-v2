@@ -45,15 +45,13 @@ class TicketController extends Controller
         $ticket = Ticket::find($idTicket);
         $messages = null;
         if($ticket) {
-            $messages = Message::query()
-                ->where('ticket', $ticket->id)
-                ->with('user')
-                ->get();
+            $messages = Message::query()->with('user')->where('ticket', $ticket->id)->get();
             $ticket = collect($ticket)->toArray();
         }
         return Inertia::render('Ticket/Item', [
             'ticket' => $ticket,
             'messages' => collect($messages)->toArray(),
+            'idUser' => $request->user()->id,
         ]);
     }
 
