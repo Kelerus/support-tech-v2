@@ -9,6 +9,12 @@ class Ticket extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'description',
+        'created_by',
+    ];
+
     public function comments() {
         return $this->hasMany(Message::class, 'ticket');
     }

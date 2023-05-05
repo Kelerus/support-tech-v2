@@ -26,7 +26,7 @@ class TicketController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Ticket/Create');
     }
 
     /**
@@ -34,7 +34,16 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $fields = $request->validate([
+            'name' => ['required', 'max:255'],
+            'description' => ['required'],
+        ]);
+
+        $fields['created_by'] = $request->user()->id;
+
+        $ticket = Ticket::create($fields);
+
+        return to_route('ticket', ['id' => $ticket->id]);
     }
 
     /**
@@ -53,6 +62,16 @@ class TicketController extends Controller
             'messages' => collect($messages)->toArray(),
             'idUser' => $request->user()->id,
         ]);
+    }
+
+    public function createMessage(Request $request) {
+        $fields = $request->validate([
+            'message' => ['required'],
+            'ticket' => ['required'],
+        ]);
+        $fields['created_by'] = $request->user()->id;
+        Message::create($fields);
+        return to_route('ticket', ['id' => $fields['ticket'] ]);
     }
 
     /**

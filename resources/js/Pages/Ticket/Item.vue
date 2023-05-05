@@ -28,7 +28,7 @@
                         <div class="bg-white shadow p-3">{{ ticket.description }}</div>
                     </div>
                 </div>
-                <Chat :messages="messages" :id-user="idUser"/>
+                <Chat :messages="messages" :id-user="idUser" :id-ticket="ticket.id"/>
             </div>
         </div>
     </AuthenticatedLayout>

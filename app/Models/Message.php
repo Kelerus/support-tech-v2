@@ -9,6 +9,11 @@ class Message extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'ticket',
+        'created_by',
+        'message',
+    ];
     public function user() {
         return $this->belongsTo(User::class,'created_by');
     }
