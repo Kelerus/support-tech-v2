@@ -10,6 +10,15 @@ use Inertia\Inertia;
 
 class TicketController extends Controller
 {
+    private function userRoles($idUser): array
+    {
+        $user = User::find($idUser);
+
+        return [
+            'admin' => $user->hasRole('admin'),
+            'tech' => $user->hasRole('tech'),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
@@ -67,6 +76,7 @@ class TicketController extends Controller
 
     public function updateStatus(Request $request): \Illuminate\Http\RedirectResponse
     {
+        $roles = $this->userRoles($request->user()->id);
         $fields = $request->validate([
             'ticket' => ['required', 'integer'],
             'status' => ['required', 'string'],
