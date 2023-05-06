@@ -1,8 +1,37 @@
 <script setup>
-    import {Head, Link} from '@inertiajs/vue3';
+    import {Head, Link, useForm} from '@inertiajs/vue3';
     import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
     import Chat from "@/Components/Chat.vue";
-    const props = defineProps(['ticket', 'messages', 'idUser']);
+    const props = defineProps({
+        ticket: {
+            type: Object,
+            required: true,
+        },
+        messages: {
+            required: true,
+        },
+        idUser: {
+            required: true,
+        },
+        statuses: {
+            required: true,
+        }
+    });
+
+    const cancelForm = useForm({
+        ticket: props.ticket.id,
+        status: '',
+    });
+
+    function cancelTicket() {
+        cancelForm.status = 'cancel';
+        cancelForm.post(route('ticket.updateStatus'), {
+            preserveScroll: true,
+            onSuccess() {
+                cancelForm.reset('status');
+            }
+        });
+    }
 </script>
 
 <template>
@@ -13,6 +42,14 @@
         <template #header>
             <div class="flex items-center justify-between">
                 <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Заявка {{ ticket ? `№${ticket.id}` : 'не найдена' }}</h2>
+                <div class="flex gap-4">
+                    <button
+                        v-if="ticket.created_by == idUser && ticket.status === statuses.process"
+                        @click="cancelTicket"
+                        :disabled="cancelForm.processing"
+                        class="bg-gray-800 px-4 py-2 rounded text-white"
+                    >Отменить заявку</button>
+                </div>
             </div>
         </template>
 
@@ -26,6 +63,10 @@
                     <div class="w-full flex flex-col gap-1">
                         <div class="p-1 px-4 bg-red-400/70 text-white text-sm rounded-md max-w-fit">Описание</div>
                         <div class="bg-white shadow p-3">{{ ticket.description }}</div>
+                    </div>
+                    <div class="w-full flex flex-col gap-1">
+                        <div class="p-1 px-4 bg-red-400/70 text-white text-sm rounded-md max-w-fit">Статус</div>
+                        <div class="bg-white shadow p-3">{{ ticket.status }}</div>
                     </div>
                 </div>
                 <Chat :messages="messages" :id-user="idUser" :id-ticket="ticket.id"/>

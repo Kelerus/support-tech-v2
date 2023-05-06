@@ -56,6 +56,7 @@ const filterTickets = computed(() => {
                         <li v-for="ticket in filterTickets" :key="ticket.id" class="bg-red-600/70 rounded-md flex items-center justify-between p-2">
                             <div class="flex flex-col gap-0.5">
                                 <h3 class="text-white text-lg">Название: {{ ticket.name }}</h3>
+                                <h3 class="text-white text-lg">Статус: {{ ticket.status }}</h3>
                                 <div class="text-white text-sm max-w-3xl truncate">Описание: {{ ticket.description }}</div>
                             </div>
                             <div class="flex gap-3 items-center">

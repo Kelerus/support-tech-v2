@@ -31,6 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/create/ticket/', [TicketController::class, 'create'])->name('ticket.create');
     Route::post('/create/ticket/', [TicketController::class, 'store'])->name('ticket.create');
     Route::post('/ticket/addMessage', [TicketController::class, 'createMessage'])->name('ticket.addMessage');
+    Route::post('/ticket/updateStatus', [TicketController::class, 'updateStatus'])->name('ticket.updateStatus');
 });
 
 

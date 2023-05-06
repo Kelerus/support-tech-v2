@@ -13,7 +13,7 @@ class TicketController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): \Inertia\Response
     {
         $tickets = Ticket::where('created_by', $request->user()->id)->get();
         return Inertia::render('Dashboard', [
@@ -24,7 +24,7 @@ class TicketController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): \Inertia\Response
     {
         return Inertia::render('Ticket/Create');
     }
@@ -32,7 +32,7 @@ class TicketController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $fields = $request->validate([
             'name' => ['required', 'max:255'],
@@ -59,17 +59,45 @@ class TicketController extends Controller
         }
         return Inertia::render('Ticket/Item', [
             'ticket' => $ticket,
+            'statuses' => config('enums.ticket_status'),
             'messages' => collect($messages)->toArray(),
             'idUser' => $request->user()->id,
         ]);
     }
 
-    public function createMessage(Request $request) {
+    public function updateStatus(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $fields = $request->validate([
+            'ticket' => ['required', 'integer'],
+            'status' => ['required', 'string'],
+        ]);
+
+        $existStatus = config('enums.ticket_status.'.$fields['status']);
+        if($existStatus) {
+            Ticket::query()->whereKey($fields['ticket'])->update([
+                'status' => $existStatus,
+            ]);
+        }
+
+        return to_route('ticket', ['id' => $fields['ticket']]);
+    }
+
+    public function createMessage(Request $request): \Illuminate\Http\RedirectResponse
+    {
         $fields = $request->validate([
             'message' => ['required'],
-            'ticket' => ['required'],
+            'ticket' => ['required', 'integer'],
         ]);
         $fields['created_by'] = $request->user()->id;
+
+        $queryTicket = Ticket::query()->find($fields['ticket']);
+        $ticket = $queryTicket->toArray();
+        $statusProcess = config('enums.ticket_status.process');
+
+        if(!empty($ticket) && $ticket['status'] != $statusProcess) {
+            Ticket::query()->whereKey($fields['ticket'])->update(['status' => $statusProcess]);
+        }
+
         Message::create($fields);
         return to_route('ticket', ['id' => $fields['ticket'] ]);
     }
