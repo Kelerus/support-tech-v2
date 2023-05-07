@@ -15,9 +15,9 @@ class CreateTestTicketSeeder extends Seeder
     public function run(): void
     {
         Ticket::create([
-            'name' => 'Test',
-            'description' => 'test description',
-            'created_by' => 1,
+            'name' => 'Настройка удаленного доступа',
+            'description' => 'Не могу подключиться к удаленному рабочему столу',
+            'created_by' => 4,
         ]);
     }
 }

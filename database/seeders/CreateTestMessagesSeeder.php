@@ -14,14 +14,14 @@ class CreateTestMessagesSeeder extends Seeder
     public function run(): void
     {
         Message::create([
-            'message' => 'Добрый день. Это тестовое сообщение',
+            'message' => 'Добрый день.',
             'ticket' => 1,
-            'created_by' => 1,
+            'created_by' => 4,
         ]);
         Message::create([
-            'message' => 'Не могу решить проблему с оформлением документа можете помочь',
+            'message' => 'Не могу подключиться к удаленному рабочему столу',
             'ticket' => 1,
-            'created_by' => 1,
+            'created_by' => 4,
         ]);
     }
 }

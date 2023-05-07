@@ -33,7 +33,10 @@
                         class="w-10 h-10" alt=""
                     >
                     <div class="flex flex-col w-full gap-2">
-                        <div v-if="message.created_by != idUser"  class="capitalize">{{ message.user.name }}. Техподдержка</div>
+                        <div
+                            v-if="message.created_by != idUser"
+                            class="capitalize"
+                        >{{ message.user.name }}</div>
                         <p :class="[message.created_by != idUser ? 'bg-orange-400/60' : 'bg-red-400/60']"
                            class=" p-2 rounded text-white text-sm"
                         >{{ message.message }}</p>

@@ -6,27 +6,28 @@ use App\Models\Message;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class TicketController extends Controller
 {
-    private function userRoles($idUser): array
-    {
-        $user = User::find($idUser);
-
-        return [
-            'admin' => $user->hasRole('admin'),
-            'tech' => $user->hasRole('tech'),
-        ];
-    }
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): \Inertia\Response
     {
-        $tickets = Ticket::where('created_by', $request->user()->id)->get();
+        $user = $request->user();
+        $tickets = Ticket::where('created_by', $user->id)->get();
         return Inertia::render('Dashboard', [
             'tickets' => collect($tickets)->toArray(),
+            'roles' => $user->getRoleNames()->toArray(),
+        ]);
+    }
+
+    public function showTicketsUsers(Request $request) {
+        return Inertia::render('Ticket/TechTickets', [
+            'tickets' => Ticket::all()->toArray(),
+            'roles' => $request->user()->getRoleNames()->toArray(),
         ]);
     }
 
@@ -58,29 +59,56 @@ class TicketController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, int $idTicket)
+    public function show(Request $request, int $idTicket): \Inertia\Response
     {
-        $ticket = Ticket::find($idTicket);
+        $user = $request->user();
+        if($user->hasRole(['admin', 'tech'])) {
+            $ticket = Ticket::find($idTicket);
+        } else {
+            $ticket = Ticket::query()
+                ->where('id', $idTicket)
+                ->where('created_by', $user->id)->first();
+        }
         $messages = null;
         if($ticket) {
             $messages = Message::query()->with('user')->where('ticket', $ticket->id)->get();
             $ticket = collect($ticket)->toArray();
         }
+
         return Inertia::render('Ticket/Item', [
             'ticket' => $ticket,
             'statuses' => config('enums.ticket_status'),
             'messages' => collect($messages)->toArray(),
-            'idUser' => $request->user()->id,
+            'idUser' => $user->id,
+            'roles' => $user->getRoleNames()->toArray(),
         ]);
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function updateStatus(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $roles = $this->userRoles($request->user()->id);
         $fields = $request->validate([
             'ticket' => ['required', 'integer'],
             'status' => ['required', 'string'],
         ]);
+
+        $user = $request->user();
+
+        if($user->hasRole(['admin', 'tech'])) {
+            $queryTicket = Ticket::query()->find($fields['ticket']);
+        } else {
+            $queryTicket = Ticket::query()
+                ->where('id', $fields['ticket'])
+                ->where('created_by', $user->id)->first();
+        }
+
+        if(!$queryTicket) {
+            throw ValidationException::withMessages([
+                'error' => 'Access denied',
+            ]);
+        }
 
         $existStatus = config('enums.ticket_status.'.$fields['status']);
         if($existStatus) {
@@ -92,6 +120,9 @@ class TicketController extends Controller
         return to_route('ticket', ['id' => $fields['ticket']]);
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function createMessage(Request $request): \Illuminate\Http\RedirectResponse
     {
         $fields = $request->validate([
@@ -100,7 +131,22 @@ class TicketController extends Controller
         ]);
         $fields['created_by'] = $request->user()->id;
 
-        $queryTicket = Ticket::query()->find($fields['ticket']);
+        $user = $request->user();
+
+        if($user->hasRole(['admin', 'tech'])) {
+            $queryTicket = Ticket::query()->find($fields['ticket']);
+        } else {
+            $queryTicket = Ticket::query()
+                ->where('id', $fields['ticket'])
+                ->where('created_by', $user->id)->first();
+        }
+
+        if(!$queryTicket) {
+            throw ValidationException::withMessages([
+                'error' => 'Access denied',
+            ]);
+        }
+
         $ticket = $queryTicket->toArray();
         $statusProcess = config('enums.ticket_status.process');
 

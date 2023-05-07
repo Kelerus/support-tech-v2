@@ -7,6 +7,16 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 
+const props = defineProps({
+    roles: {
+        type: Array,
+        required: false,
+    }
+});
+
+const isAdmin = ref(props.roles ? props.roles.includes('admin') : false);
+const isTech = ref(props.roles ? props.roles.includes('tech') : false);
+
 const showingNavigationDropdown = ref(false);
 </script>
 
@@ -32,6 +42,7 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Главная
                                 </NavLink>
+                                <NavLink v-if="isAdmin || isTech" :active="route().current('ticket.tech')" :href="route('ticket.tech')">Заявки пользователей</NavLink>
                             </div>
                         </div>
 
@@ -76,7 +87,7 @@ const showingNavigationDropdown = ref(false);
                         <!-- Hamburger -->
                         <div class="-mr-2 flex items-center sm:hidden">
                             <button
-                                @click="showingNavigationDropdown = !showingNavigationDropdown"
+                                @click="showingNavigationDropdown.value = !showingNavigationDropdown"
                                 class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out"
                             >
                                 <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">

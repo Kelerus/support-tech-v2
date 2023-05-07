@@ -27,11 +27,16 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [TicketController::class, 'index'])->name('dashboard');
-    Route::get('/ticket/{id}', [TicketController::class, 'show'])->name('ticket');
-    Route::get('/create/ticket/', [TicketController::class, 'create'])->name('ticket.create');
-    Route::post('/create/ticket/', [TicketController::class, 'store'])->name('ticket.create');
+    Route::get('/ticket/item/{id}', [TicketController::class, 'show'])->name('ticket');
+    Route::get('/create/ticket', [TicketController::class, 'create'])->name('ticket.create');
+
+    Route::post('/create/ticket', [TicketController::class, 'store'])->name('ticket.create');
     Route::post('/ticket/addMessage', [TicketController::class, 'createMessage'])->name('ticket.addMessage');
     Route::post('/ticket/updateStatus', [TicketController::class, 'updateStatus'])->name('ticket.updateStatus');
+
+    Route::middleware('role:admin|tech')->group(function () {
+        Route::get('/ticket/users', [TicketController::class, 'showTicketsUsers'])->name('ticket.tech');
+    });
 });
 
 
