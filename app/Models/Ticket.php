@@ -13,6 +13,7 @@ class Ticket extends Model
         'name',
         'description',
         'created_by',
+        'status',
     ];
 
     public function comments() {
