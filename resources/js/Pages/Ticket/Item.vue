@@ -63,7 +63,7 @@
             </div>
         </template>
 
-        <div class="py-5">
+        <div class="px-2 py-5">
             <div v-if="ticket" class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="flex flex-col items-center gap-3 mb-8">
                     <div class="flex flex-col w-full gap-1">

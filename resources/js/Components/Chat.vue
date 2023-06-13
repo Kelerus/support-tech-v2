@@ -45,7 +45,7 @@
             </ul>
         </div>
         <div class="flex flex-col items-center">
-            <div class="w-2/3">
+            <div class="w-full md:w-2/3">
                 <div v-if="form.errors.message" class="text-sm text-red-600">{{ form.errors.message }}</div>
                 <div class="p-2 bg-gradient-to-r flex gap-4 items-center from-orange-400/60 to-red-400/60 rounded max-h-[10rem]">
                     <div class="flex flex-col justify-center w-full">
